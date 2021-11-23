@@ -112,9 +112,6 @@ class API(object):
         )
 
     def load_extra_vars (self, extra_env_vars=None):
-        testd = open("/tmp/testd", "w");
-        testd.write(str(type(extra_env_vars)));
-        testd.close();
         if isinstance(extra_env_vars, dict):
             for key, val in extra_env_vars.items():
                 os.environ[str(key)] = str(val);

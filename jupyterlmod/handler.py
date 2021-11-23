@@ -47,10 +47,6 @@ class Lmod(IPythonHandler):
             extra_env_vars = self.get_json_body().get("extra_env_vars")
             lmod.load_extra_vars(extra_env_vars)
 
-            testh = open("/tmp/testh", "w");
-            testh.write("Header Wert: " + str(extra_env_vars));
-            testh.close();
-
             if not extra_env_vars:
                 raise web.HTTPError(400, u'modules or extra_env_vars missing from body')
 
