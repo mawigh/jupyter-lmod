@@ -3,7 +3,7 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  Dialog, showDialog, ICommandPalette
+  InputDialog, Dialog, showDialog, ICommandPalette
 } from '@jupyterlab/apputils';
 
 import {
@@ -177,7 +177,17 @@ class LmodWidget extends Widget {
       const span = event.target.closest('li').querySelector('span');
       const item = span.innerText;
       if(target.innerText == 'Load') {
-        await lmodAPI.load([item]);
+        var extra_env_vars = {};
+        const module_name = String(item).split("/");
+        if (module_name[0] == "JupyterKernel-Julia") {
+          InputDialog.getItem({ title: 'Do you want to set JULIA_NUM_THREADS before starting a Julia kernel?', items: ["10", "24"], editable: true }).then(async value => {
+            if (String(value.value) !== "" || String(value.value) !== null || String(value.value) !== "0") {
+              extra_env_vars["JULIA_NUM_THREADS"] = String(value.value);
+              lmodAPI.load_extra_vars(extra_env_vars);
+            }
+          });
+        }
+          await lmodAPI.load([item]);
       } else if(target.innerText == 'Unload') {
         await lmodAPI.unload([item]);
       }

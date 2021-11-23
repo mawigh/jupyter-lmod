@@ -36,12 +36,24 @@ class Lmod(IPythonHandler):
     @web.authenticated
     @jupyter_path_decorator
     async def post(self):
-        modules = self.get_json_body().get('modules')
-        if not modules:
-            raise web.HTTPError(400, u'modules missing from body')
-        elif not isinstance(modules, list):
-            raise web.HTTPError(400, u'modules argument needs to be a list')
-        await lmod.load(*modules)
+        try:
+            modules = self.get_json_body().get('modules')
+            await lmod.load(*modules)
+
+            if not isinstance(modules, list):
+                raise web.HTTPError(400, u'modules argument needs to be a list')
+
+        except:
+            extra_env_vars = self.get_json_body().get("extra_env_vars")
+            lmod.load_extra_vars(extra_env_vars)
+
+            testh = open("/tmp/testh", "w");
+            testh.write("Header Wert: " + str(extra_env_vars));
+            testh.close();
+
+            if not extra_env_vars:
+                raise web.HTTPError(400, u'modules or extra_env_vars missing from body')
+
         self.finish(json.dumps("SUCCESS"))
 
     @web.authenticated

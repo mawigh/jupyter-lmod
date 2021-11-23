@@ -27,6 +27,24 @@ class Lmod {
     }
   }
 
+  async load_extra_vars (extra_vars) {
+    const data = {
+      'extra_env_vars': extra_vars,
+    };
+    const response = await fetch(
+      this.url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-XSRFToken': this._xsrf
+        },
+        body: JSON.stringify(data),
+      }
+    )
+    return response.json();
+
+  }
   async load(modules) {
     const data = {
       'modules' : modules,

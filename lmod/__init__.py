@@ -19,7 +19,7 @@ async def module(command, *args):
     cmd = LMOD_CMD, "python", "--terse", command, *args
 
     proc = await create_subprocess_shell(
-        " ".join(cmd), stdout=PIPE, stderr=PIPE
+            " ".join(cmd), stdout=PIPE, stderr=PIPE
     )
 
     stdout, stderr = await proc.communicate()
@@ -110,6 +110,14 @@ class API(object):
                 "await lmod.load({})".format(str(modules)[1:-1]),
             ]
         )
+
+    def load_extra_vars (self, extra_env_vars=None):
+        testd = open("/tmp/testd", "w");
+        testd.write(str(type(extra_env_vars)));
+        testd.close();
+        if isinstance(extra_env_vars, dict):
+            for key, val in extra_env_vars.items():
+                os.environ[str(key)] = str(val);
 
     @update_sys_path("PYTHONPATH")
     @update_sys_path("EBPYTHONPREFIXES", SITE_POSTFIX)
@@ -214,3 +222,4 @@ purge = _lmod.purge
 show = _lmod.show
 use = _lmod.use
 unuse = _lmod.unuse
+load_extra_vars = _lmod.load_extra_vars
